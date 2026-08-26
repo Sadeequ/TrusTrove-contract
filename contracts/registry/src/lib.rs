@@ -505,63 +505,7 @@ impl RegistryContract {
         true
     }
 
-    #[allow(dead_code)]
-    pub fn transfer_ownership(env: Env, new_admin: Address) {
-        // Transfers admin ownership to a new address.
-        //
-        // Requires authentication from BOTH the current admin and the incoming
-        // new admin, preventing accidental transfers to wrong addresses.
-        //
-        // # Arguments
-        // * `env` - The Soroban environment.
-        // * `new_admin` - The address that will become the new admin.
-        //
-        // # Panics
-        // * `NotFound` if the admin is not set.
-        //
-        // # Example
-        // ```ignore
-        // client.transfer_ownership(&new_admin);
-        // ```
-        let admin: Address = env
-            .storage()
-            .instance()
-            .get(&DataKey::Admin)
-            .unwrap_or_else(|| panic_with_error!(&env, RegistryError::NotFound));
-        admin.require_auth();
-        new_admin.require_auth();
-        env.storage().instance().set(&DataKey::Admin, &new_admin);
-        events::ownership_transferred(&env, &admin, &new_admin);
-        Self::extend_instance_ttl(&env);
-    }
-
-    /// Transfers contract admin to a new address.
-    ///
-    /// Unlike `transfer_ownership`, this function only requires auth from the
-    /// current admin — the new admin does not need to sign. This is useful
-    /// for key rotation scenarios where the current admin key may be
-    /// compromised or needs to be rotated without the new key holder's
-    /// involvement.
-    ///
-    /// # Arguments
-    /// * `env` - The Soroban environment.
-    /// * `new_admin` - The address that will become the new contract admin.
-    ///
-    /// # Auth
-    /// * Requires `current_admin.require_auth()` — only the current stored
-    ///   contract admin may call this function.
-    ///
-    /// # Panics
-    /// * `RegistryError::NotFound` if the contract has not been initialized
-    ///   (no admin is stored under `DataKey::Admin`).
-    ///
-    /// # Returns
-    /// * `()` - No value is returned.
-    ///
-    /// # Example
-    /// ```ignore
-    /// client.transfer_admin(&new_admin);
-    /// ```
+   
     #[allow(dead_code)]
     pub fn transfer_admin(env: Env, new_admin: Address) {
         let admin: Address = env
