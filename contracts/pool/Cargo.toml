@@ -11,7 +11,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 soroban-sdk = { workspace = true }
-trusttrove-ttl = { path = "../ttl" }
+trusttrove-ttl = { workspace = true }
 
 # Cross-contract deps (`trusttrove-invoice`, `trusttrove-escrow`) are
 # intentionally `dev-dependencies`: the pool only references the invoice and

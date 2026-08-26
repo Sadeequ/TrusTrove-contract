@@ -442,21 +442,6 @@ Emitted when a profile's metadata is updated.
 
 ---
 
-### `address_revoked`
-
-Emitted when an address is revoked (issuer or buyer).
-
-| Field | Type | Description |
-|-------|------|-------------|
-| **Topics** | | |
-| `topic[0]` | `Symbol` | `"address_revoked"` |
-| `topic[1]` | `Address` | Revoked address |
-| **Data** | `()` | None |
-
-**Emitted by:** `revoke()` in `contracts/registry/src/lib.rs:359`
-
----
-
 ### `batch_registered`
 
 Emitted when a batch registration completes.
@@ -473,16 +458,16 @@ Emitted when a batch registration completes.
 
 ### `profile_verified`
 
-Emitted when a profile's verification status is checked/updated.
+Emitted when a profile's verification status changes (verified or revoked).
 
 | Field | Type | Description |
 |-------|------|-------------|
 | **Topics** | | |
 | `topic[0]` | `Symbol` | `"profile_verified"` |
 | `topic[1]` | `Address` | Profile address |
-| **Data** | `bool` | Verification status (true = verified) |
+| **Data** | `bool` | New verification status (`true` = verified, `false` = revoked) |
 
-**Emitted by:** `is_verified()` in `contracts/registry/src/lib.rs:380`
+**Emitted by:** `verify_profile()` and `revoke()` in `contracts/registry/src/lib.rs`
 
 ---
 

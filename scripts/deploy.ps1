@@ -322,10 +322,30 @@ NEXT_PUBLIC_POOL_USDC_CONTRACT_ID=$poolUsdcId
 NEXT_PUBLIC_POOL_XLM_CONTRACT_ID=$poolXlmId # EXPERIMENTAL
 "@ | Set-Content $envOut
 
+$jsonOut = "deployments.json"
+@"
+{
+  "registry": "$registryId",
+  "invoice": "$invoiceId",
+  "escrow_usdc": "$escrowUsdcId",
+  "escrow_xlm": "$escrowXlmId",
+  "pool_usdc": "$poolUsdcId",
+  "pool_xlm": "$poolXlmId",
+  "updated_at": "$timestamp"
+}
+"@ | Set-Content $jsonOut
+
+if (Test-Path "scripts/maintainer/update-readme-addresses.ps1") {
+    powershell -ExecutionPolicy Bypass -File "scripts/maintainer/update-readme-addresses.ps1"
+} elseif (Test-Path "scripts/maintainer/update-readme-addresses.sh") {
+    bash scripts/maintainer/update-readme-addresses.sh
+}
+
 Write-Host "`n==========================================="
 Write-Host "Deployment complete."
 Write-Host ""
 Write-Host "Addresses saved to: $addressesFile"
+Write-Host "JSON addresses saved to: $jsonOut"
 Write-Host "Frontend env saved to: $envOut"
 Write-Host ""
 Write-Host "Add to trusttrove-app .env.local:"

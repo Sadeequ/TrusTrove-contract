@@ -388,7 +388,7 @@ impl RegistryContract {
     /// Revokes a registered profile by setting its verification status to `false`.
     ///
     /// This function is idempotent: calling it on an already-revoked profile
-    /// returns `true` without re-emitting the `address_revoked` event or
+    /// returns `true` without re-emitting the `profile_verified` event or
     /// rewriting storage.
     ///
     /// # Arguments
@@ -410,30 +410,7 @@ impl RegistryContract {
     /// let result = client.revoke(&issuer);
     /// ```
     pub fn revoke(env: Env, address: Address) -> bool {
-        let admin: Address = env
-            .storage()
-            .instance()
-            .get(&DataKey::Admin)
-            .unwrap_or_else(|| panic_with_error!(&env, RegistryError::NotFound));
-        admin.require_auth();
-        let key = DataKey::Profile(address.clone());
-        let mut profile: Profile = env
-            .storage()
-            .persistent()
-            .get(&key)
-            .unwrap_or_else(|| panic_with_error!(&env, RegistryError::NotFound));
-        if !profile.verified() {
-            return true;
-        }
-        profile.set_verified(false);
-        profile.set_revoked(true);
-        env.storage().persistent().set(&key, &profile);
-        env.storage()
-            .persistent()
-            .extend_ttl(&key, TTL_THRESHOLD, TTL_EXTEND_TO);
-        events::address_revoked(&env, &address);
-        Self::extend_instance_ttl(&env);
-        true
+        Self::verify_profile(env, address, false)
     }
 
     /// Reinstates verification for a previously revoked profile.

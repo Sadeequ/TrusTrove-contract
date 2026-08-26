@@ -41,7 +41,7 @@ Rust · Soroban SDK"""
     },
     {
         "title": "test(registry): achieve 100% branch coverage on registry_contract",
-        "labels": "testing,good first issue,complexity:low",
+        "labels": "tests,good first issue,complexity:low",
         "body": """## Summary
 The registry contract currently has unit tests for happy paths only. This issue covers writing tests for all error branches.
 
@@ -91,7 +91,7 @@ Rust · Soroban SDK · persistent storage"""
     },
     {
         "title": "test(invoice): write full lifecycle integration test for invoice_contract",
-        "labels": "testing,complexity:high",
+        "labels": "tests,complexity:high",
         "body": """## Summary
 Write a single end-to-end integration test that exercises the complete invoice lifecycle in one test function using the Soroban test environment.
 
@@ -143,7 +143,7 @@ Rust · Soroban SDK · u128 arithmetic"""
     # ── ESCROW CONTRACT ───────────────────────────────────────────────────────────
     {
         "title": "test(escrow): write unit tests for all escrow_contract functions",
-        "labels": "testing,good first issue,complexity:low",
+        "labels": "tests,good first issue,complexity:low",
         "body": """## Summary
 The escrow contract is missing comprehensive unit tests. Write tests for all functions.
 
@@ -210,7 +210,7 @@ Rust · Soroban SDK"""
     },
     {
         "title": "test(pool): write deposit, withdraw, and yield distribution unit tests",
-        "labels": "testing,good first issue,complexity:medium",
+        "labels": "tests,good first issue,complexity:medium",
         "body": """## Summary
 Write comprehensive unit tests for the pool contract covering share math and yield distribution.
 
@@ -246,7 +246,7 @@ GitHub Actions · cargo clippy"""
     },
     {
         "title": "docs(contracts): write inline rustdoc comments for all public functions",
-        "labels": "documentation,good first issue,complexity:low",
+        "labels": "docs,good first issue,complexity:low",
         "body": """## Summary
 None of the public contract functions have rustdoc comments. Add `///` doc comments to every public function across all four contracts.
 
@@ -291,7 +291,7 @@ Bash · Stellar CLI"""
 ]
 
 print(f"Ensuring required labels exist for {REPO}...")
-for label, color in [("testing", "fbca04"), ("devops", "006b75")]:
+for label, color in [("tests", "fbca04"), ("devops", "006b75")]:
     cmd = ["gh", "label", "create", label, "--color", color, "--repo", REPO]
     subprocess.run(cmd, capture_output=True)
 

@@ -48,7 +48,7 @@ Write-Host "✓ Issue 2 created"
 
 gh issue create --repo $REPO `
   --title "test(registry): achieve 100% branch coverage on registry_contract" `
-  --label "testing,good first issue,complexity:low" `
+  --label "tests,good first issue,complexity:low" `
   --body @"
 ## Summary
 The registry contract currently has unit tests for happy paths only. This issue covers writing tests for all error branches.
@@ -111,7 +111,7 @@ Write-Host "✓ Issue 5 created"
 
 gh issue create --repo $REPO `
   --title "test(invoice): write full lifecycle integration test for invoice_contract" `
-  --label "testing,complexity:high" `
+  --label "tests,complexity:high" `
   --body @"
 ## Summary
 Write a single end-to-end integration test that exercises the complete invoice lifecycle in one test function using the Soroban test environment.
@@ -172,7 +172,7 @@ Write-Host "✓ Issue 7 created"
 
 gh issue create --repo $REPO `
   --title "test(escrow): write unit tests for all escrow_contract functions" `
-  --label "testing,good first issue,complexity:low" `
+  --label "tests,good first issue,complexity:low" `
   --body @"
 ## Summary
 The escrow contract is missing comprehensive unit tests. Write tests for all functions.
@@ -256,7 +256,7 @@ Write-Host "✓ Issue 11 created"
 
 gh issue create --repo $REPO `
   --title "test(pool): write deposit, withdraw, and yield distribution unit tests" `
-  --label "testing,good first issue,complexity:medium" \
+  --label "tests,good first issue,complexity:medium" \
   --body @"
 ## Summary
 Write comprehensive unit tests for the pool contract covering share math and yield distribution.
@@ -301,7 +301,7 @@ Write-Host "✓ Issue 13 created"
 
 gh issue create --repo $REPO `
   --title "docs(contracts): write inline rustdoc comments for all public functions" `
-  --label "documentation,good first issue,complexity:low" `
+  --label "docs,good first issue,complexity:low" `
   --body @"
 ## Summary
 None of the public contract functions have rustdoc comments. Add \`///\` doc comments to every public function across all four contracts.

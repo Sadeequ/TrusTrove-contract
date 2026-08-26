@@ -65,7 +65,7 @@ create_issue() {
 
 # ── Ensure required labels exist ────────────────────────────────────────────
 echo "Ensuring required labels exist..."
-for entry in "testing:fbca04" "devops:006b75"; do
+for entry in "tests:fbca04" "devops:006b75"; do
   label="${entry%%:*}"
   color="${entry##*:}"
   gh_req label create "$label" --color "$color" --repo "$REPO" 2>/dev/null || true
@@ -85,7 +85,7 @@ create_issue \
 
 create_issue \
   "test(registry): achieve 100% branch coverage on registry_contract" \
-  "testing,good first issue,complexity:low" \
+  "tests,good first issue,complexity:low" \
   "## Summary\nThe registry contract currently has unit tests for happy paths only. This issue covers writing tests for all error branches.\n\n## Acceptance Criteria\n- [ ] Test \`AlreadyRegistered\` error on duplicate issuer registration\n- [ ] Test \`AlreadyRegistered\` error on duplicate buyer registration\n- [ ] Test \`NotFound\` error on \`get_profile\` for unknown address\n- [ ] Test \`NotAuthorized\` error on \`revoke\` called by non-admin\n- [ ] Test \`is_verified\` returns false for unknown address (no panic)\n- [ ] All tests pass with \`cargo test -p trusttrove-registry\`\n\n## Tech Stack\nRust · soroban-sdk testutils · Env::default() · mock_all_auths()"
 
 # ── INVOICE CONTRACT ──────────────────────────────────────────────────────────
@@ -102,7 +102,7 @@ create_issue \
 
 create_issue \
   "test(invoice): write full lifecycle integration test for invoice_contract" \
-  "testing,complexity:high" \
+  "tests,complexity:high" \
   "## Summary\nWrite a single end-to-end integration test that exercises the complete invoice lifecycle in one test function using the Soroban test environment.\n\n## Test Flow\n1. Deploy registry, invoice, escrow, and pool contracts\n2. Register issuer and buyer\n3. Create invoice\n4. List for financing\n5. Fund via pool\n6. Mark as shipped\n7. Confirm delivery (both parties)\n8. Repay\n9. Assert final status == Repaid\n10. Assert pool yield increased\n\n## Acceptance Criteria\n- [ ] Test lives in \`contracts/invoice/src/test.rs\`\n- [ ] All four contracts deployed and wired in the test environment\n- [ ] Assertions at every stage verify correct status transition\n- [ ] Test passes with \`cargo test -p trusttrove-invoice\`\n\n## Tech Stack\nRust · soroban-sdk testutils · env.register_contract()"
 
 create_issue \
@@ -114,7 +114,7 @@ create_issue \
 
 create_issue \
   "test(escrow): write unit tests for all escrow_contract functions" \
-  "testing,good first issue,complexity:low" \
+  "tests,good first issue,complexity:low" \
   "## Summary\nThe escrow contract is missing comprehensive unit tests. Write tests for all functions.\n\n## Required Tests\n- [ ] \`test_lock_stores_record_and_transfers_usdc\`\n- [ ] \`test_lock_fails_if_already_locked\`\n- [ ] \`test_lock_only_callable_by_pool\`\n- [ ] \`test_release_to_issuer_sends_correct_amount\`\n- [ ] \`test_release_to_pool_sends_correct_amount\`\n- [ ] \`test_handle_default_returns_funds_to_pool\`\n- [ ] \`test_handle_default_returns_false_if_no_record\`\n- [ ] \`test_get_locked_returns_zero_for_unknown_id\`\n\n## Tech Stack\nRust · soroban-sdk testutils · token::StellarAssetClient for mock USDC"
 
 create_issue \
@@ -136,7 +136,7 @@ create_issue \
 
 create_issue \
   "test(pool): write deposit, withdraw, and yield distribution unit tests" \
-  "testing,good first issue,complexity:medium" \
+  "tests,good first issue,complexity:medium" \
   "## Summary\nWrite comprehensive unit tests for the pool contract covering share math and yield distribution.\n\n## Required Tests\n- [ ] \`test_first_deposit_issues_one_to_one_shares\`\n- [ ] \`test_second_deposit_issues_proportional_shares\`\n- [ ] \`test_withdraw_returns_correct_usdc\`\n- [ ] \`test_withdraw_fails_if_insufficient_liquidity\`\n- [ ] \`test_yield_increases_share_price_after_repayment\`\n- [ ] \`test_two_lps_receive_proportional_yield\`\n- [ ] \`test_utilization_rate_calculates_correctly\`\n- [ ] \`test_lp_position_reflects_current_share_price\`\n\n## Tech Stack\nRust · soroban-sdk testutils · mock USDC token"
 
 # ── DEVOPS / CI ───────────────────────────────────────────────────────────────
@@ -148,7 +148,7 @@ create_issue \
 
 create_issue \
   "docs(contracts): write inline rustdoc comments for all public functions" \
-  "documentation,good first issue,complexity:low" \
+  "docs,good first issue,complexity:low" \
   "## Summary\nNone of the public contract functions have rustdoc comments. Add \`///\` doc comments to every public function across all four contracts.\n\n## Requirements\nEach doc comment must include:\n- One-line summary\n- \`# Arguments\` section listing each parameter\n- \`# Returns\` section\n- \`# Panics\` section listing all panic conditions with error variant names\n- \`# Example\` section with a usage snippet where applicable\n\n## Contracts to document\n- [ ] registry_contract — all 7 functions\n- [ ] invoice_contract — all 11 functions\n- [ ] escrow_contract — all 5 functions\n- [ ] pool_contract — all 9 functions\n\n## Tech Stack\nRust rustdoc syntax"
 
 create_issue \

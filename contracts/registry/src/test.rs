@@ -274,8 +274,8 @@ fn test_reinstate_restores_verified_and_emits_event() {
             ),
             (
                 client.address.clone(),
-                (Symbol::new(&env, "address_revoked"), issuer.clone()).into_val(&env),
-                ().into_val(&env),
+                (Symbol::new(&env, "profile_verified"), issuer.clone()).into_val(&env),
+                false.into_val(&env),
             ),
             (
                 client.address.clone(),
@@ -1502,8 +1502,8 @@ fn test_revoke_emits_event() {
             ),
             (
                 client.address.clone(),
-                (Symbol::new(&env, "address_revoked"), issuer.clone()).into_val(&env),
-                ().into_val(&env),
+                (Symbol::new(&env, "profile_verified"), issuer.clone()).into_val(&env),
+                false.into_val(&env),
             ),
         ]
     );

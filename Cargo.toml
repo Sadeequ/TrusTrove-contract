@@ -22,6 +22,7 @@ trusttrove-registry = { path = "contracts/registry" }
 trusttrove-invoice = { path = "contracts/invoice" }
 trusttrove-escrow = { path = "contracts/escrow" }
 trusttrove-pool = { path = "contracts/pool" }
+trusttrove-ttl = { path = "contracts/ttl" }
 
 [profile.release]
 opt-level = "z"
