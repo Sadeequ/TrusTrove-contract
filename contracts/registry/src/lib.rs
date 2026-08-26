@@ -46,7 +46,7 @@ impl RegistryContract {
     /// ```ignore
     /// client.initialize(&admin);
     /// ```
-      #[allow(dead_code)]
+
     pub fn initialize(env: Env, admin: Address) {
         if env.storage().instance().has(&DataKey::Admin) {
             panic_with_error!(&env, RegistryError::AlreadyInitialized);
@@ -88,7 +88,7 @@ impl RegistryContract {
     /// ```ignore
     /// let result = client.register_issuer(&issuer, &metadata);
     /// ```
-      #[allow(dead_code)]
+
     pub fn register_issuer(env: Env, address: Address, metadata: Map<String, String>) -> bool {
         Self::require_initialized(&env);
         Self::validate_metadata(&env, &metadata);
@@ -114,7 +114,7 @@ impl RegistryContract {
 
     // Returns the list of addresses that were skipped (already registered) so
     // the caller knows exactly which entries were not processed (#66).
-      #[allow(dead_code)]
+    
     pub fn batch_register_issuers(
         env: Env,
         entries: Vec<(Address, Map<String, String>)>,
@@ -191,7 +191,7 @@ impl RegistryContract {
     /// ```ignore
     /// let result = client.register_buyer(&buyer, &metadata);
     /// ```
-      #[allow(dead_code)]
+  
     pub fn register_buyer(env: Env, address: Address, metadata: Map<String, String>) -> bool {
         Self::require_initialized(&env);
         Self::validate_metadata(&env, &metadata);
@@ -244,7 +244,7 @@ impl RegistryContract {
     /// ```ignore
     /// let ok = client.update_profile(&issuer, &new_metadata);
     /// ```
-    #[allow(dead_code)]
+
     pub fn update_profile(env: Env, address: Address, metadata: Map<String, String>) -> bool {
         Self::validate_metadata(&env, &metadata);
         address.require_auth();
@@ -284,7 +284,7 @@ impl RegistryContract {
     /// ```ignore
     /// let result = client.update_metadata(&issuer, &new_metadata);
     /// ```
-    #[allow(dead_code)]
+
     pub fn update_metadata(env: Env, address: Address, metadata: Map<String, String>) -> bool {
         Self::validate_metadata(&env, &metadata);
         address.require_auth();
@@ -326,7 +326,7 @@ impl RegistryContract {
     /// ```ignore
     /// let profile = client.get_profile(&issuer);
     /// ```
-    #[allow(dead_code)]
+
     pub fn get_profile(env: Env, address: Address) -> Profile {
         let key = DataKey::Profile(address.clone());
         let profile = env
@@ -365,7 +365,7 @@ impl RegistryContract {
     /// ```ignore
     /// let verified = client.is_verified(&issuer);
     /// ```
-    #[allow(dead_code)]
+
     pub fn is_verified(env: Env, address: Address) -> bool {
         let key = DataKey::Profile(address);
         match env.storage().persistent().get::<_, Profile>(&key) {
@@ -380,7 +380,7 @@ impl RegistryContract {
         }
     }
 
-    #[allow(dead_code)]
+
     pub fn get_verification_status(env: Env, address: Address) -> VerificationStatus {
         match env
             .storage()
@@ -418,7 +418,7 @@ impl RegistryContract {
     /// ```ignore
     /// let result = client.revoke(&issuer);
     /// ```
-    #[allow(dead_code)]
+
     pub fn revoke(env: Env, address: Address) -> bool {
         Self::verify_profile(env, address, false)
     }
@@ -451,7 +451,7 @@ impl RegistryContract {
     /// ```ignore
     /// let ok = client.reinstate(&issuer);
     /// ```
-    #[allow(dead_code)]
+
     pub fn reinstate(env: Env, address: Address) -> bool {
         let admin: Address = env
             .storage()
@@ -476,7 +476,7 @@ impl RegistryContract {
         true
     }
 
-    #[allow(dead_code)]
+
     pub fn verify_profile(env: Env, address: Address, verify: bool) -> bool {
         let admin: Address = env
             .storage()
@@ -506,7 +506,7 @@ impl RegistryContract {
     }
 
    
-    #[allow(dead_code)]
+
     pub fn transfer_admin(env: Env, new_admin: Address) {
         let admin: Address = env
             .storage()
@@ -542,7 +542,7 @@ impl RegistryContract {
     /// ```ignore
     /// let admin = client.get_admin();
     /// ```
-      #[allow(dead_code)]
+    
     pub fn get_admin(env: Env) -> Address {
         let admin = env
             .storage()
@@ -562,14 +562,14 @@ impl RegistryContract {
             panic_with_error!(env, RegistryError::NotInitialized);
         }
     }
-      #[allow(dead_code)]
+
     fn extend_instance_ttl(env: &Env) {
         env.storage()
             .instance()
             .extend_ttl(TTL_THRESHOLD, TTL_EXTEND_TO);
     }
 
-      #[allow(dead_code)]
+
     fn validate_metadata(env: &Env, metadata: &Map<String, String>) {
         if metadata.len() > MAX_METADATA_SIZE {
             panic_with_error!(env, RegistryError::InvalidMetadata);
