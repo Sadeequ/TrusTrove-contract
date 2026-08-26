@@ -46,7 +46,6 @@ impl RegistryContract {
     /// ```ignore
     /// client.initialize(&admin);
     /// ```
-
     pub fn initialize(env: Env, admin: Address) {
         if env.storage().instance().has(&DataKey::Admin) {
             panic_with_error!(&env, RegistryError::AlreadyInitialized);
@@ -88,7 +87,6 @@ impl RegistryContract {
     /// ```ignore
     /// let result = client.register_issuer(&issuer, &metadata);
     /// ```
-
     pub fn register_issuer(env: Env, address: Address, metadata: Map<String, String>) -> bool {
         Self::require_initialized(&env);
         Self::validate_metadata(&env, &metadata);
@@ -114,7 +112,6 @@ impl RegistryContract {
 
     // Returns the list of addresses that were skipped (already registered) so
     // the caller knows exactly which entries were not processed (#66).
-    
     pub fn batch_register_issuers(
         env: Env,
         entries: Vec<(Address, Map<String, String>)>,
@@ -191,7 +188,6 @@ impl RegistryContract {
     /// ```ignore
     /// let result = client.register_buyer(&buyer, &metadata);
     /// ```
-  
     pub fn register_buyer(env: Env, address: Address, metadata: Map<String, String>) -> bool {
         Self::require_initialized(&env);
         Self::validate_metadata(&env, &metadata);
@@ -244,7 +240,6 @@ impl RegistryContract {
     /// ```ignore
     /// let ok = client.update_profile(&issuer, &new_metadata);
     /// ```
-
     pub fn update_profile(env: Env, address: Address, metadata: Map<String, String>) -> bool {
         Self::validate_metadata(&env, &metadata);
         address.require_auth();
@@ -284,7 +279,6 @@ impl RegistryContract {
     /// ```ignore
     /// let result = client.update_metadata(&issuer, &new_metadata);
     /// ```
-
     pub fn update_metadata(env: Env, address: Address, metadata: Map<String, String>) -> bool {
         Self::validate_metadata(&env, &metadata);
         address.require_auth();
@@ -326,7 +320,6 @@ impl RegistryContract {
     /// ```ignore
     /// let profile = client.get_profile(&issuer);
     /// ```
-
     pub fn get_profile(env: Env, address: Address) -> Profile {
         let key = DataKey::Profile(address.clone());
         let profile = env
@@ -365,7 +358,6 @@ impl RegistryContract {
     /// ```ignore
     /// let verified = client.is_verified(&issuer);
     /// ```
-
     pub fn is_verified(env: Env, address: Address) -> bool {
         let key = DataKey::Profile(address);
         match env.storage().persistent().get::<_, Profile>(&key) {
@@ -379,7 +371,6 @@ impl RegistryContract {
             None => false,
         }
     }
-
 
     pub fn get_verification_status(env: Env, address: Address) -> VerificationStatus {
         match env
@@ -418,7 +409,6 @@ impl RegistryContract {
     /// ```ignore
     /// let result = client.revoke(&issuer);
     /// ```
-
     pub fn revoke(env: Env, address: Address) -> bool {
         Self::verify_profile(env, address, false)
     }
@@ -451,7 +441,6 @@ impl RegistryContract {
     /// ```ignore
     /// let ok = client.reinstate(&issuer);
     /// ```
-
     pub fn reinstate(env: Env, address: Address) -> bool {
         let admin: Address = env
             .storage()
@@ -475,7 +464,6 @@ impl RegistryContract {
         Self::extend_instance_ttl(&env);
         true
     }
-
 
     pub fn verify_profile(env: Env, address: Address, verify: bool) -> bool {
         let admin: Address = env
@@ -505,8 +493,33 @@ impl RegistryContract {
         true
     }
 
-   
-
+    /// Transfers contract admin to a new address.
+    ///
+    /// Unlike `transfer_ownership`, this function only requires auth from the
+    /// current admin — the new admin does not need to sign. This is useful
+    /// for key rotation scenarios where the current admin key may be
+    /// compromised or needs to be rotated without the new key holder's
+    /// involvement.
+    ///
+    /// # Arguments
+    /// * `env` - The Soroban environment.
+    /// * `new_admin` - The address that will become the new contract admin.
+    ///
+    /// # Auth
+    /// * Requires `current_admin.require_auth()` — only the current stored
+    ///   contract admin may call this function.
+    ///
+    /// # Panics
+    /// * `RegistryError::NotFound` if the contract has not been initialized
+    ///   (no admin is stored under `DataKey::Admin`).
+    ///
+    /// # Returns
+    /// * `()` - No value is returned.
+    ///
+    /// # Example
+    /// ```ignore
+    /// client.transfer_admin(&new_admin);
+    /// ```
     pub fn transfer_admin(env: Env, new_admin: Address) {
         let admin: Address = env
             .storage()
@@ -542,7 +555,6 @@ impl RegistryContract {
     /// ```ignore
     /// let admin = client.get_admin();
     /// ```
-    
     pub fn get_admin(env: Env) -> Address {
         let admin = env
             .storage()
@@ -568,7 +580,6 @@ impl RegistryContract {
             .instance()
             .extend_ttl(TTL_THRESHOLD, TTL_EXTEND_TO);
     }
-
 
     fn validate_metadata(env: &Env, metadata: &Map<String, String>) {
         if metadata.len() > MAX_METADATA_SIZE {
