@@ -388,7 +388,7 @@ impl RegistryContract {
     /// Revokes a registered profile by setting its verification status to `false`.
     ///
     /// This function is idempotent: calling it on an already-revoked profile
-    /// returns `true` without re-emitting the `profile_verified` event or
+    /// returns `true` without re-emitting the `address_revoked` event or
     /// rewriting storage.
     ///
     /// # Arguments
@@ -410,7 +410,30 @@ impl RegistryContract {
     /// let result = client.revoke(&issuer);
     /// ```
     pub fn revoke(env: Env, address: Address) -> bool {
-        Self::verify_profile(env, address, false)
+        let admin: Address = env
+            .storage()
+            .instance()
+            .get(&DataKey::Admin)
+            .unwrap_or_else(|| panic_with_error!(&env, RegistryError::NotFound));
+        admin.require_auth();
+        let key = DataKey::Profile(address.clone());
+        let mut profile: Profile = env
+            .storage()
+            .persistent()
+            .get(&key)
+            .unwrap_or_else(|| panic_with_error!(&env, RegistryError::NotFound));
+        if !profile.verified() {
+            return true;
+        }
+        profile.set_verified(false);
+        profile.set_revoked(true);
+        env.storage().persistent().set(&key, &profile);
+        env.storage()
+            .persistent()
+            .extend_ttl(&key, TTL_THRESHOLD, TTL_EXTEND_TO);
+        events::address_revoked(&env, &address);
+        Self::extend_instance_ttl(&env);
+        true
     }
 
     /// Reinstates verification for a previously revoked profile.
@@ -491,6 +514,35 @@ impl RegistryContract {
         events::profile_verified(&env, &address, verify);
         Self::extend_instance_ttl(&env);
         true
+    }
+
+    pub fn transfer_ownership(env: Env, new_admin: Address) {
+        // Transfers admin ownership to a new address.
+        //
+        // Requires authentication from BOTH the current admin and the incoming
+        // new admin, preventing accidental transfers to wrong addresses.
+        //
+        // # Arguments
+        // * `env` - The Soroban environment.
+        // * `new_admin` - The address that will become the new admin.
+        //
+        // # Panics
+        // * `NotFound` if the admin is not set.
+        //
+        // # Example
+        // ```ignore
+        // client.transfer_ownership(&new_admin);
+        // ```
+        let admin: Address = env
+            .storage()
+            .instance()
+            .get(&DataKey::Admin)
+            .unwrap_or_else(|| panic_with_error!(&env, RegistryError::NotFound));
+        admin.require_auth();
+        new_admin.require_auth();
+        env.storage().instance().set(&DataKey::Admin, &new_admin);
+        events::ownership_transferred(&env, &admin, &new_admin);
+        Self::extend_instance_ttl(&env);
     }
 
     /// Transfers contract admin to a new address.
